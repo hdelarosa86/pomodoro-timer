@@ -10,8 +10,18 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
+timer = None
+# ---------------------------- TIMER RESET ------------------------------- #
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+
+def reset_time():
+    global reps
+    window.after_cancel(timer)
+    title_label.config(text='TIMER')
+    check_mark_label.config(text='')
+    canvas.itemconfig(canvas_text, text='00:00')
+    reps = 0
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
@@ -20,19 +30,22 @@ def start_timer():
     global reps
     reps += 1
     if reps % 8 == 0:
-        count_down(LONG_BREAK_MIN)
+        count_down(LONG_BREAK_MIN * 60)
         title_label.config(text='BREAK', fg=RED)
     elif reps % 2 == 0:
-        count_down(SHORT_BREAK_MIN)
+        count_down(SHORT_BREAK_MIN * 60)
         title_label.config(text='BREAK', fg=PINK)
     else:
-        count_down(WORK_MIN)
+        count_down(WORK_MIN * 60)
         title_label.config(text='WORK', fg=GREEN)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 def count_down(count):
+    global reps
+    global timer
+
     count_min = math.floor(count / 60)
     count_sec = count % 60
 
@@ -41,9 +54,15 @@ def count_down(count):
 
     canvas.itemconfig(canvas_text, text=f'{count_min}:{count_sec}')
     if count > 0:
-        window.after(1000, count_down, count - 1)
+       timer = window.after(1000, count_down, count - 1)
     else:
         start_timer()
+        checks = ''
+        work_cycles = math.floor(reps/2)
+        for _ in range(work_cycles):
+            checks += '✔'
+        check_mark_label.config(text=checks)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -55,7 +74,7 @@ window.config(padx=100, pady=50, bg=YELLOW)
 title_label = Label(text='Timer', fg=GREEN, bg=YELLOW, font=(FONT_NAME, 40, 'normal'))
 title_label.grid(column=1,row=0)
 
-check_mark_label = Label(text='✔', fg=GREEN, bg=YELLOW, font=(FONT_NAME, 40, 'normal'))
+check_mark_label = Label(text='', fg=GREEN, bg=YELLOW, font=(FONT_NAME, 40, 'normal'))
 
 check_mark_label.grid(column=1, row=3)
 
@@ -68,7 +87,7 @@ canvas.grid(column=1, row=1)
 start_button = Button(text='start', highlightbackground=YELLOW, command=start_timer)
 start_button.grid(column=0, row=2)
 
-reset_button = Button(text='reset', highlightbackground=YELLOW)
+reset_button = Button(text='reset', highlightbackground=YELLOW, command=reset_time)
 reset_button.grid(column=2, row=2)
 
 
