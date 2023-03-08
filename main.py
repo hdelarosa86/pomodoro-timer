@@ -19,15 +19,15 @@ reps = 0
 def start_timer():
     global reps
     reps += 1
-    if reps == 8:
+    if reps % 8 == 0:
         count_down(LONG_BREAK_MIN)
-        title_label.config(text='BREAK')
+        title_label.config(text='BREAK', fg=RED)
     elif reps % 2 == 0:
         count_down(SHORT_BREAK_MIN)
-        title_label.config(text='BREAK')
+        title_label.config(text='BREAK', fg=PINK)
     else:
         count_down(WORK_MIN)
-        title_label.config(text='WORK')
+        title_label.config(text='WORK', fg=GREEN)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
