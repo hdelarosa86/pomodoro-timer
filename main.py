@@ -91,6 +91,4 @@ reset_button = Button(text='reset', highlightbackground=YELLOW, command=reset_ti
 reset_button.grid(column=2, row=2)
 
 
-
-
 window.mainloop()
